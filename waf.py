@@ -19,7 +19,7 @@ class Waf(object):
     ALL = "ALL"
 
     # API settings
-    API     = "https://api.cloudflare.com/v4/"
+    API     = "https://api.cloudflare.com/client/v4/"
     TIMEOUT = 30
     ROWS    = 15
 
@@ -130,12 +130,11 @@ class Waf(object):
                 params  = params,
                 timeout = self.TIMEOUT
             )
-        except requests.exceptions.RequestException:
-            sys.exit('Error: ...')
+        except requests.exceptions.RequestException, ex:
+            sys.exit("Error: %s" % str(ex))
 
-        # TODO: Deal with error codes
         code = response.status_code
-        if code != 200 and code != 400: sys.exit('Error: ...')
+        if code != 200 and code != 400: sys.exit("Bad request: %s" % response.status_code)
 
         return json.loads(response.text)
 
