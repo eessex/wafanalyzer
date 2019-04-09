@@ -11,7 +11,7 @@ The WAF Analyzer also provides some additional functions such as fetching inform
 
 Set Up
 ------
-Simply clone this repository, fill in the details in the config file, and run `./analyzer.py`. You may need to install the requests module with `sudo easy_install pip; sudo pip install requests`.
+Simply clone this repository, run `pip install -r requirements.txt` and fill in the details in the config file, then run `./analyzer.py`.
 
 For additional help run `./analyzer.py --help`
 
