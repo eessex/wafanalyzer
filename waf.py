@@ -48,10 +48,11 @@ class Waf(object):
     _zones  = None
     _oDesc  = {}
 
-    def __init__(self, user, key, pages):
+    def __init__(self, user, key, pages, host):
         self.user  = user
         self.key   = key
         self.pages = pages
+        self.host  = host
         self.auth  = {
             'X-Auth-Key'  : self.key,
             'X-Auth-Email': self.user,
@@ -96,7 +97,13 @@ class Waf(object):
                     self.getRuleDescription(zone, new)
 
                 page    += 1
-                events  += response['result']
+                for event in response['result']:
+                    if self.host is None:
+                        events.append(event)
+                    else:
+                        if self.host in event['host']:
+                            events.append(event)
+
                 pageId   = response['result_info']['next_page_id']
 
                 if len(response['result']) == 0 or page is None or \
@@ -155,6 +162,13 @@ class Waf(object):
             data[tKey] += 1
 
         return self.sortData(data, self.ROWS)
+
+    def printEvents(self):
+        print("All events:")
+        print
+        for event in self.events:
+            print(event)
+        print
 
     def printTopEvents(self, title, keys):
         print title + "\n"

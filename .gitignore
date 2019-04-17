@@ -1,3 +1,2 @@
-waf.pyc
-analyzer.pyc
-config.pyc
+config.py
+*.pyc

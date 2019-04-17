@@ -18,6 +18,10 @@ def getParser():
 						type = str, help = 'The zone ID')
 	parser.add_argument('-o', '--org', metavar = 'org', dest = 'org',
 						type = str, help = 'The organization ID')
+	parser.add_argument('-t', '--host', metavar = 'host', dest = 'host',
+						type = str, help = 'The hostname')
+	parser.add_argument('-p', '--print_events', metavar = 'print_events', dest = 'print_events',
+						type = str, help = 'Print events')
 	parser.add_argument('-a', '--all', action = 'store_true', dest = 'all', 
 						help = 'All zones (overwrites zone ID)', default = False)
 	parser.add_argument('-s', '--separate', action = 'store_true',
@@ -39,6 +43,9 @@ def getZoneInteractive(waf):
 			print "Error: Invalid input. Try again."
 	return zone
 
+def printEvents(waf):
+	waf.printEvents()
+
 def printTopEvents(waf):
 	print "Total events checked: " + str(len(waf.events)) + "\n"
 	waf.printTopEvents("Top Country Threats:", 'country')
@@ -59,6 +66,8 @@ def commandLineRunner():
 	KEY   = args.key    if args.key    is not None else config.KEY
 	ZONE  = args.zone   if args.zone   is not None else config.ZONE
 	ORG   = args.org    if args.org    is not None else config.ORG
+	HOST  = args.host   if args.host   is not None else config.HOST
+	PRINT_EVENTS = args.print_events if args.print_events is not None else config.PRINT_EVENTS
 	PAGES = config.MAXP if config.MAXP is not None else 10
 	ALL   = args.all
 	SEP   = args.separate
@@ -68,7 +77,7 @@ def commandLineRunner():
 	KEY  = KEY  if KEY  else raw_input("Enter your API key:")
 
 	# Create WAF object
-	waf = Waf(USER, KEY, PAGES)
+	waf = Waf(USER, KEY, PAGES, HOST)
 
 	if not ZONE and not ORG and not ALL:
 		ZONE = [getZoneInteractive(waf)]
@@ -93,16 +102,20 @@ def commandLineRunner():
 				if zone[0] == id:
 					print "\nStarted grabbing WAF data for " + \
 						zone[1] + " - ZoneID: " + id
-			waf2 = Waf(USER, KEY, PAGES)
+			waf2 = Waf(USER, KEY, PAGES, HOST)
 			waf2.zone = [id]
 			if len(waf2.events) == 0: 
 				print "No data for this zone.\n"
+			if PRINT_EVENTS:
+				printEvents(waf2)
 			printTopEvents(waf2)
 
 	# Aggregate reports
 	else:
 		if len(waf.events) == 0: 
 			print "No data for this zone.\n"
+		if PRINT_EVENTS:
+				printEvents(waf)
 		printTopEvents(waf)
 
 

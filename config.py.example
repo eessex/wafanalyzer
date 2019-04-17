@@ -5,3 +5,5 @@ KEY  = "" # Your API Key
 ZONE = "" # Your zone ID (optional)
 ORG  = "" # Your organization ID (optional)
 MAXP = 10 # Number of pages in the traffic tab the script will inspect
+HOST = "" # Hostname to filter events
+PRINT_EVENTS = False # Print out all WAF events
